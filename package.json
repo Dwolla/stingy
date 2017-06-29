@@ -13,6 +13,7 @@
   ],
   "author": "Dwolla",
   "dependencies": {
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "thrift": "^0.10.0"
   }
 }
