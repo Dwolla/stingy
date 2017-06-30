@@ -2,8 +2,10 @@ const thrift = require('thrift');
 const fs = require('fs');
 const constants = require('./lib/constants');
 const thriftParser = require('./lib/thriftParser');
+const PackageGenerator = require('./lib/PackageGenerator');
 const ServerGenerator = require('./lib/ServerGenerator');
 const ControllerGenerator = require('./lib/ControllerGenerator');
+const ViewGenerator = require('./lib/ViewGenerator');
 
 function getThriftAst() {
   const thriftDef = fs.readFileSync(process.argv.slice(2)[0]);
@@ -21,7 +23,7 @@ function stripJsExt(file) {
 }
 
 function writeRequire(name, file) {
-  clientStream.write(`const ${name} = require(\'../gen-nodejs/${stripJsExt(file)}\');\n`);
+  clientStream.write(`const ${name} = require(\'./gen-nodejs/${stripJsExt(file)}\');\n`);
 }
 
 function writeThriftRequire() {
@@ -113,10 +115,16 @@ thriftInfo.functionNames.forEach(name => {
   writeCall(tFunc);
 });
 
-const sg = new ServerGenerator();
+const pg = new PackageGenerator();
+pg.generate();
+
+const sg = new ServerGenerator(thriftInfo);
 sg.generate();
 
 const cg = new ControllerGenerator(thriftInfo);
 cg.generate();
+
+const vg = new ViewGenerator(thriftInfo);
+vg.generate();
 
 console.log('Generated some stuff for you to check out in the gen-src folder!');
