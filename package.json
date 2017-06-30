@@ -13,7 +13,10 @@
   ],
   "author": "Dwolla",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "express-handlebars": "^3.0.0",
+    "method-override": "^2.3.9",
     "thrift": "^0.10.0",
     "thrift-parser": "^0.4.0"
   }

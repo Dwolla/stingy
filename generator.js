@@ -1,9 +1,9 @@
 const thrift = require('thrift');
-const thriftParser = require('thrift-parser');
 const fs = require('fs');
-
-const ThriftGenFolder = './gen-nodejs';
-const SrcDir = './gen-src';
+const constants = require('./lib/constants');
+const thriftParser = require('./lib/thriftParser');
+const ServerGenerator = require('./lib/ServerGenerator');
+const ControllerGenerator = require('./lib/ControllerGenerator');
 
 function getThriftAst() {
   const thriftDef = fs.readFileSync(process.argv.slice(2)[0]);
@@ -11,8 +11,8 @@ function getThriftAst() {
 }
 
 function createSourceDirectory() {
-  if (!fs.existsSync(SrcDir)) {
-      fs.mkdirSync(SrcDir);
+  if (!fs.existsSync(constants.SrcDir)) {
+      fs.mkdirSync(constants.SrcDir);
   }
 }
 
@@ -36,7 +36,7 @@ const connection = thrift.createConnection("localhost", 9090, {
 });
 
 connection.on('error', function(err) {
-  assert(false, err);
+  //assert(false, err);
 });
 
 const client = thrift.createClient(Service, connection);
@@ -50,16 +50,16 @@ function isTypesFile(file) {
 }
 
 function requireHelper(file) {
-  return require(`${ThriftGenFolder}/${file}`);
+  return require(`${constants.ThriftGenFolder}/${file}`);
 }
 
-function writeParam(tFunc, thriftAst) {
+function writeParam(tFunc, thriftInfo) {
   const arg = tFunc.args[0];
 
   if (arg.type === 'string') {
     clientStream.write(`const ${arg.name} = \'foobar\';`);
   } else {
-    const argProps = thriftAst.struct[arg.type];
+    const argProps = thriftInfo.structs[arg.type];
     clientStream.write(`const ${arg.name} = new ttypes.${arg.type}();\n`);
 
     argProps.forEach(prop => {
@@ -83,14 +83,14 @@ client.${tFunc.name}(${arg.name}, (err, response) => {
   )
 }
 
-const thriftAst = getThriftAst();
+const thriftInfo = thriftParser(process.argv.slice(2)[0]);
 
 createSourceDirectory();
-const clientStream = fs.createWriteStream(`${SrcDir}/client.js`);
+const clientStream = fs.createWriteStream(`${constants.SrcDir}/client.js`);
 
 writeThriftRequire();
 
-fs.readdirSync(ThriftGenFolder).forEach(file => {
+fs.readdirSync(constants.ThriftGenFolder).forEach(file => {
   if (isTypesFile(file)) {
     writeRequire('ttypes', file);
   } else {
@@ -100,12 +100,8 @@ fs.readdirSync(ThriftGenFolder).forEach(file => {
 
 writeClient();
 
-const serviceName = Object.keys(thriftAst.service)[0];
-const functions = thriftAst.service[serviceName].functions;
-const functionNames = Object.keys(functions);
-
-functionNames.forEach(name => {
-  const tFunc = functions[name];
+thriftInfo.functionNames.forEach(name => {
+  const tFunc = thriftInfo.functions[name];
   if (tFunc.args.len < 1) {
     throw new Exception('Thrift functions with no params are not supported yet');
   }
@@ -113,8 +109,14 @@ functionNames.forEach(name => {
     throw new Exception('Thrift functions with more than one param are not supported yet');
   }
 
-  writeParam(tFunc, thriftAst);
+  writeParam(tFunc, thriftInfo);
   writeCall(tFunc);
 });
+
+const sg = new ServerGenerator();
+sg.generate();
+
+const cg = new ControllerGenerator(thriftInfo);
+cg.generate();
 
 console.log('Generated some stuff for you to check out in the gen-src folder!');
