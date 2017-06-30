@@ -7,11 +7,6 @@ const ServerGenerator = require('./lib/ServerGenerator');
 const ControllerGenerator = require('./lib/ControllerGenerator');
 const ViewGenerator = require('./lib/ViewGenerator');
 
-function getThriftAst() {
-  const thriftDef = fs.readFileSync(process.argv.slice(2)[0]);
-  return thriftParser(thriftDef);
-}
-
 function createSourceDirectory() {
   if (!fs.existsSync(constants.SrcDir)) {
       fs.mkdirSync(constants.SrcDir);
