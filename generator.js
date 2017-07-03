@@ -1,4 +1,5 @@
 const fs = require('fs');
+const exec = require('child_process').execSync;
 const constants = require('./lib/constants');
 const thriftParser = require('./lib/thriftParser');
 const PackageGenerator = require('./lib/generators/PackageGenerator');
@@ -6,6 +7,14 @@ const ClientGenerator = require('./lib/generators/ClientGenerator');
 const ServerGenerator = require('./lib/generators/ServerGenerator');
 const ControllerGenerator = require('./lib/generators/ControllerGenerator');
 const ViewGenerator = require('./lib/generators/ViewGenerator');
+
+function getFileNameFromArgs() {
+  return process.argv.slice(2)[0];
+}
+
+function generateNodeJsClient(filename, dest) {
+  exec(`thrift -r -o ${dest} --gen js:node ${filename}`);
+}
 
 function createSourceDirectory() {
   if (!fs.existsSync(constants.SrcDir)) {
@@ -30,9 +39,11 @@ function createSourceDirectory() {
 //   }
 // }
 
-const thriftInfo = thriftParser(process.argv.slice(2)[0]);
+const filename = getFileNameFromArgs();
+const thriftInfo = thriftParser(filename);
 
 createSourceDirectory();
+generateNodeJsClient(filename, constants.SrcDir);
 
 new PackageGenerator().generate();
 new ClientGenerator(thriftInfo).generate();
