@@ -1,6 +1,6 @@
 const thrift = require('thrift');
-const ExampleService = require('../gen-nodejs/StingyExampleService');
-const ttypes = require('../gen-nodejs/example_types');
+const ExampleService = require('./gen-nodejs/StingyExampleService');
+const ttypes = require('./gen-nodejs/example_types');
 
 const connection = thrift.createConnection("localhost", 9090, {
   transport : thrift.TBufferedTransport,
