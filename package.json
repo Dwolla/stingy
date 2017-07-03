@@ -19,5 +19,8 @@
     "method-override": "^2.3.9",
     "thrift": "^0.10.0",
     "thrift-parser": "^0.4.0"
+  },
+  "scripts": {
+    "start": "node generator.js ./example-service/example.thrift"
   }
 }
