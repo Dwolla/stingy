@@ -8,6 +8,11 @@ var server = thrift.createServer(ExampleService, {
     result(null, `You sent: '${foo}'`);
   },
 
+  DoSomethingWithAnInt: function(someInt, result) {
+    console.log('DoSomethingWithAnInt(', someInt, ')');
+    result(null, `You sent: '${someInt}'`);
+  },
+
   DoSomethingComplicated: function(request, result) {
     console.log('DoSomethingComplicated(', request, ')');
     var response = new ttypes.SomethingComplicatedResponse();

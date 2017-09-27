@@ -49,8 +49,8 @@ SomethingComplicatedRequest.prototype.read = function(input) {
       }
       break;
       case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.bar = input.readString();
+      if (ftype == Thrift.Type.I16) {
+        this.bar = input.readI16();
       } else {
         input.skip(ftype);
       }
@@ -72,8 +72,8 @@ SomethingComplicatedRequest.prototype.write = function(output) {
     output.writeFieldEnd();
   }
   if (this.bar !== null && this.bar !== undefined) {
-    output.writeFieldBegin('bar', Thrift.Type.STRING, 2);
-    output.writeString(this.bar);
+    output.writeFieldBegin('bar', Thrift.Type.I16, 2);
+    output.writeI16(this.bar);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

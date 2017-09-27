@@ -121,6 +121,114 @@ StingyExampleService_DoSomethingSimple_result.prototype.write = function(output)
   return;
 };
 
+var StingyExampleService_DoSomethingWithAnInt_args = function(args) {
+  this.someInt = null;
+  if (args) {
+    if (args.someInt !== undefined && args.someInt !== null) {
+      this.someInt = args.someInt;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field someInt is unset!');
+    }
+  }
+};
+StingyExampleService_DoSomethingWithAnInt_args.prototype = {};
+StingyExampleService_DoSomethingWithAnInt_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I64) {
+        this.someInt = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+StingyExampleService_DoSomethingWithAnInt_args.prototype.write = function(output) {
+  output.writeStructBegin('StingyExampleService_DoSomethingWithAnInt_args');
+  if (this.someInt !== null && this.someInt !== undefined) {
+    output.writeFieldBegin('someInt', Thrift.Type.I64, 1);
+    output.writeI64(this.someInt);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var StingyExampleService_DoSomethingWithAnInt_result = function(args) {
+  this.success = null;
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+  }
+};
+StingyExampleService_DoSomethingWithAnInt_result.prototype = {};
+StingyExampleService_DoSomethingWithAnInt_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+StingyExampleService_DoSomethingWithAnInt_result.prototype.write = function(output) {
+  output.writeStructBegin('StingyExampleService_DoSomethingWithAnInt_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 var StingyExampleService_DoSomethingComplicated_args = function(args) {
   this.request = null;
   if (args) {
@@ -287,6 +395,53 @@ StingyExampleServiceClient.prototype.recv_DoSomethingSimple = function(input,mty
   }
   return callback('DoSomethingSimple failed: unknown result');
 };
+StingyExampleServiceClient.prototype.DoSomethingWithAnInt = function(someInt, callback) {
+  this._seqid = this.new_seqid();
+  if (callback === undefined) {
+    var _defer = Q.defer();
+    this._reqs[this.seqid()] = function(error, result) {
+      if (error) {
+        _defer.reject(error);
+      } else {
+        _defer.resolve(result);
+      }
+    };
+    this.send_DoSomethingWithAnInt(someInt);
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_DoSomethingWithAnInt(someInt);
+  }
+};
+
+StingyExampleServiceClient.prototype.send_DoSomethingWithAnInt = function(someInt) {
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('DoSomethingWithAnInt', Thrift.MessageType.CALL, this.seqid());
+  var args = new StingyExampleService_DoSomethingWithAnInt_args();
+  args.someInt = someInt;
+  args.write(output);
+  output.writeMessageEnd();
+  return this.output.flush();
+};
+
+StingyExampleServiceClient.prototype.recv_DoSomethingWithAnInt = function(input,mtype,rseqid) {
+  var callback = this._reqs[rseqid] || function() {};
+  delete this._reqs[rseqid];
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(input);
+    input.readMessageEnd();
+    return callback(x);
+  }
+  var result = new StingyExampleService_DoSomethingWithAnInt_result();
+  result.read(input);
+  input.readMessageEnd();
+
+  if (null !== result.success) {
+    return callback(null, result.success);
+  }
+  return callback('DoSomethingWithAnInt failed: unknown result');
+};
 StingyExampleServiceClient.prototype.DoSomethingComplicated = function(request, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
@@ -382,6 +537,42 @@ StingyExampleServiceProcessor.prototype.process_DoSomethingSimple = function(seq
       } else {
         result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
         output.writeMessageBegin("DoSomethingSimple", Thrift.MessageType.EXCEPTION, seqid);
+      }
+      result_obj.write(output);
+      output.writeMessageEnd();
+      output.flush();
+    });
+  }
+};
+StingyExampleServiceProcessor.prototype.process_DoSomethingWithAnInt = function(seqid, input, output) {
+  var args = new StingyExampleService_DoSomethingWithAnInt_args();
+  args.read(input);
+  input.readMessageEnd();
+  if (this._handler.DoSomethingWithAnInt.length === 1) {
+    Q.fcall(this._handler.DoSomethingWithAnInt, args.someInt)
+      .then(function(result) {
+        var result_obj = new StingyExampleService_DoSomethingWithAnInt_result({success: result});
+        output.writeMessageBegin("DoSomethingWithAnInt", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }, function (err) {
+        var result;
+        result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+        output.writeMessageBegin("DoSomethingWithAnInt", Thrift.MessageType.EXCEPTION, seqid);
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+  } else {
+    this._handler.DoSomethingWithAnInt(args.someInt, function (err, result) {
+      var result_obj;
+      if ((err === null || typeof err === 'undefined')) {
+        result_obj = new StingyExampleService_DoSomethingWithAnInt_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+        output.writeMessageBegin("DoSomethingWithAnInt", Thrift.MessageType.REPLY, seqid);
+      } else {
+        result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+        output.writeMessageBegin("DoSomethingWithAnInt", Thrift.MessageType.EXCEPTION, seqid);
       }
       result_obj.write(output);
       output.writeMessageEnd();

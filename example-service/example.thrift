@@ -1,6 +1,6 @@
 struct SomethingComplicatedRequest {
   1: required string foo;
-  2: required string bar;
+  2: required i16 bar;
 }
 
 struct SomethingComplicatedResponse {
@@ -10,5 +10,6 @@ struct SomethingComplicatedResponse {
 
 service StingyExampleService {
   string DoSomethingSimple(1: required string foo)
+  string DoSomethingWithAnInt(1: required i64 someInt)
   SomethingComplicatedResponse DoSomethingComplicated(1: required SomethingComplicatedRequest request)
 }
