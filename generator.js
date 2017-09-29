@@ -2,6 +2,7 @@ const fs = require('fs');
 const cp = require('child_process');
 const constants = require('./lib/constants');
 const thriftParser = require('./lib/thriftParser');
+const assetManager = require('./lib/assetManager');
 const PackageGenerator = require('./lib/generators/PackageGenerator');
 const ClientGenerator = require('./lib/generators/ClientGenerator');
 const ServerGenerator = require('./lib/generators/ServerGenerator');
@@ -35,6 +36,8 @@ new ServerGenerator(thriftInfo).generate();
 new ControllerGenerator(thriftInfo).generate();
 new ViewGenerator(thriftInfo).generate();
 new BootstrapFileGenerator().generate();
+
+assetManager.copy();
 
 console.log('Generated some stuff for you to check out in the gen-src folder!');
 

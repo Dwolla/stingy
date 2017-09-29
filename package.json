@@ -13,14 +13,29 @@
   ],
   "author": "Dwolla",
   "dependencies": {
-    "body-parser": "^1.17.2",
-    "express": "^4.15.3",
-    "express-handlebars": "^3.0.0",
-    "method-override": "^2.3.9",
-    "thrift": "^0.10.0",
-    "thrift-parser": "^0.4.0"
+    "body-parser": "1.17.2",
+    "express": "4.15.3",
+    "express-handlebars": "3.0.0",
+    "fs-extra": "4.0.2",
+    "method-override": "2.3.9",
+    "thrift": "0.10.0",
+    "thrift-parser": "0.4.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "7.1.2",
+    "bulma": "0.5.3",
+    "clean-css-cli": "4.1.6",
+    "node-sass": "4.5.3",
+    "npm-run-all": "4.1.1",
+    "postcss-cli": "4.1.0"
   },
   "scripts": {
+    "build": "npm-run-all css",
+    "css": "npm-run-all css:*",
+    "css:sass": "node-sass --output-style expanded --source-map true --source-map-contents true --precision 6 assets/css/main.scss assets/css/main.css",
+    "css:prefix": "postcss --use autoprefixer --replace assets/css/*.css",
+    "css:minify": "cleancss --level 1 --source-map --source-map-inline-sources --output assets/css/main.min.css assets/css/main.css",
+    "postinstall": "npm run build",
     "start": "node generator.js ./example-service/example.thrift"
   }
 }

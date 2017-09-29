@@ -1,0 +1,10 @@
+.navbar-brand {
+  > a {
+    margin-left: -16px;
+
+    @include until($desktop) {
+      margin-left: 0;
+      padding: 0 24px;
+    }
+  }
+}

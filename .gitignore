@@ -1,4 +1,6 @@
 node_modules
 gen-src
 npm-debug.log
-.DS_Store
+*.DS_Store
+*.css
+*.map
