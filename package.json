@@ -3,15 +3,12 @@
   "version": "0.0.1",
   "description": "A UI for Thrift interface testing",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@stash.dwolla.net:7999/hack/stingy.git"
-  },
   "keywords": [
     "Thrift",
     "UI"
   ],
   "author": "Dwolla",
+  "license": "MIT",
   "dependencies": {
     "body-parser": "1.17.2",
     "express": "4.15.3",

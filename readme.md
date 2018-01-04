@@ -1,4 +1,4 @@
-# Stingy
+# Stingy - A UI for Thrift
 
 An automatically generated web UI for Thrift interfaces.
 
