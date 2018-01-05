@@ -1,7 +1,7 @@
 {
   "name": "stingy",
   "version": "0.0.1",
-  "description": "A UI for Thrift interface testing",
+  "description": "An automatically generated web UI for Thrift interfaces",
   "main": "index.js",
   "keywords": [
     "Thrift",
@@ -9,6 +9,10 @@
   ],
   "author": "Dwolla",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dwolla/stingy.git"
+   },
   "dependencies": {
     "body-parser": "1.17.2",
     "express": "4.15.3",
