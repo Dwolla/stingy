@@ -1,5 +1,7 @@
 # Stingy - A UI for Thrift
 
+[![license](https://img.shields.io/github/license/Dwolla/stingy.svg?style=flat-square)]()
+
 An automatically generated web UI for Thrift interfaces.
 
 _Current limitations:_
