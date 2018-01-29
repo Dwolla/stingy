@@ -229,6 +229,114 @@ StingyExampleService_DoSomethingWithAnInt_result.prototype.write = function(outp
   return;
 };
 
+var StingyExampleService_DoSomethingWithABool_args = function(args) {
+  this.someBool = null;
+  if (args) {
+    if (args.someBool !== undefined && args.someBool !== null) {
+      this.someBool = args.someBool;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field someBool is unset!');
+    }
+  }
+};
+StingyExampleService_DoSomethingWithABool_args.prototype = {};
+StingyExampleService_DoSomethingWithABool_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.BOOL) {
+        this.someBool = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+StingyExampleService_DoSomethingWithABool_args.prototype.write = function(output) {
+  output.writeStructBegin('StingyExampleService_DoSomethingWithABool_args');
+  if (this.someBool !== null && this.someBool !== undefined) {
+    output.writeFieldBegin('someBool', Thrift.Type.BOOL, 1);
+    output.writeBool(this.someBool);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var StingyExampleService_DoSomethingWithABool_result = function(args) {
+  this.success = null;
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+  }
+};
+StingyExampleService_DoSomethingWithABool_result.prototype = {};
+StingyExampleService_DoSomethingWithABool_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.BOOL) {
+        this.success = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+StingyExampleService_DoSomethingWithABool_result.prototype.write = function(output) {
+  output.writeStructBegin('StingyExampleService_DoSomethingWithABool_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.BOOL, 0);
+    output.writeBool(this.success);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 var StingyExampleService_DoSomethingComplicated_args = function(args) {
   this.request = null;
   if (args) {
@@ -442,6 +550,53 @@ StingyExampleServiceClient.prototype.recv_DoSomethingWithAnInt = function(input,
   }
   return callback('DoSomethingWithAnInt failed: unknown result');
 };
+StingyExampleServiceClient.prototype.DoSomethingWithABool = function(someBool, callback) {
+  this._seqid = this.new_seqid();
+  if (callback === undefined) {
+    var _defer = Q.defer();
+    this._reqs[this.seqid()] = function(error, result) {
+      if (error) {
+        _defer.reject(error);
+      } else {
+        _defer.resolve(result);
+      }
+    };
+    this.send_DoSomethingWithABool(someBool);
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_DoSomethingWithABool(someBool);
+  }
+};
+
+StingyExampleServiceClient.prototype.send_DoSomethingWithABool = function(someBool) {
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('DoSomethingWithABool', Thrift.MessageType.CALL, this.seqid());
+  var args = new StingyExampleService_DoSomethingWithABool_args();
+  args.someBool = someBool;
+  args.write(output);
+  output.writeMessageEnd();
+  return this.output.flush();
+};
+
+StingyExampleServiceClient.prototype.recv_DoSomethingWithABool = function(input,mtype,rseqid) {
+  var callback = this._reqs[rseqid] || function() {};
+  delete this._reqs[rseqid];
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(input);
+    input.readMessageEnd();
+    return callback(x);
+  }
+  var result = new StingyExampleService_DoSomethingWithABool_result();
+  result.read(input);
+  input.readMessageEnd();
+
+  if (null !== result.success) {
+    return callback(null, result.success);
+  }
+  return callback('DoSomethingWithABool failed: unknown result');
+};
 StingyExampleServiceClient.prototype.DoSomethingComplicated = function(request, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
@@ -573,6 +728,42 @@ StingyExampleServiceProcessor.prototype.process_DoSomethingWithAnInt = function(
       } else {
         result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
         output.writeMessageBegin("DoSomethingWithAnInt", Thrift.MessageType.EXCEPTION, seqid);
+      }
+      result_obj.write(output);
+      output.writeMessageEnd();
+      output.flush();
+    });
+  }
+};
+StingyExampleServiceProcessor.prototype.process_DoSomethingWithABool = function(seqid, input, output) {
+  var args = new StingyExampleService_DoSomethingWithABool_args();
+  args.read(input);
+  input.readMessageEnd();
+  if (this._handler.DoSomethingWithABool.length === 1) {
+    Q.fcall(this._handler.DoSomethingWithABool, args.someBool)
+      .then(function(result) {
+        var result_obj = new StingyExampleService_DoSomethingWithABool_result({success: result});
+        output.writeMessageBegin("DoSomethingWithABool", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }, function (err) {
+        var result;
+        result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+        output.writeMessageBegin("DoSomethingWithABool", Thrift.MessageType.EXCEPTION, seqid);
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+  } else {
+    this._handler.DoSomethingWithABool(args.someBool, function (err, result) {
+      var result_obj;
+      if ((err === null || typeof err === 'undefined')) {
+        result_obj = new StingyExampleService_DoSomethingWithABool_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+        output.writeMessageBegin("DoSomethingWithABool", Thrift.MessageType.REPLY, seqid);
+      } else {
+        result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+        output.writeMessageBegin("DoSomethingWithABool", Thrift.MessageType.EXCEPTION, seqid);
       }
       result_obj.write(output);
       output.writeMessageEnd();

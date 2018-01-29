@@ -13,11 +13,16 @@ var server = thrift.createServer(ExampleService, {
     result(null, `You sent: '${someInt}'`);
   },
 
+  DoSomethingWithABool: function(someBool, result) {
+    console.log('DoSomethingWithABool(', someBool, ')');
+    result(null, someBool);
+  },
+
   DoSomethingComplicated: function(request, result) {
     console.log('DoSomethingComplicated(', request, ')');
     var response = new ttypes.SomethingComplicatedResponse();
     response.success = true;
-    response.message = `You sent: foo='${request.foo}' bar='${request.bar}'`;
+    response.message = `You sent: foo='${request.foo}' bar='${request.bar}' baz='${request.baz}'`;
     result(null, response);
   }
 });

@@ -14,6 +14,7 @@ var ttypes = module.exports = {};
 var SomethingComplicatedRequest = module.exports.SomethingComplicatedRequest = function(args) {
   this.foo = null;
   this.bar = null;
+  this.baz = null;
   if (args) {
     if (args.foo !== undefined && args.foo !== null) {
       this.foo = args.foo;
@@ -24,6 +25,11 @@ var SomethingComplicatedRequest = module.exports.SomethingComplicatedRequest = f
       this.bar = args.bar;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field bar is unset!');
+    }
+    if (args.baz !== undefined && args.baz !== null) {
+      this.baz = args.baz;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field baz is unset!');
     }
   }
 };
@@ -55,6 +61,13 @@ SomethingComplicatedRequest.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.BOOL) {
+        this.baz = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -74,6 +87,11 @@ SomethingComplicatedRequest.prototype.write = function(output) {
   if (this.bar !== null && this.bar !== undefined) {
     output.writeFieldBegin('bar', Thrift.Type.I16, 2);
     output.writeI16(this.bar);
+    output.writeFieldEnd();
+  }
+  if (this.baz !== null && this.baz !== undefined) {
+    output.writeFieldBegin('baz', Thrift.Type.BOOL, 3);
+    output.writeBool(this.baz);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
