@@ -18,11 +18,16 @@ var server = thrift.createServer(ExampleService, {
     result(null, someBool);
   },
 
+  DoSomethingWithAnEnum: function(someEnum, result) {
+    console.log('DoSomethingWithAnEnum(', someEnum, ')');
+    result(null, someEnum);
+  },
+
   DoSomethingComplicated: function(request, result) {
     console.log('DoSomethingComplicated(', request, ')');
     var response = new ttypes.SomethingComplicatedResponse();
     response.success = true;
-    response.message = `You sent: foo='${request.foo}' bar='${request.bar}' baz='${request.baz}'`;
+    response.message = `You sent: foo='${request.foo}' bar='${request.bar}' baz='${request.baz}' pok='${request.pok}'`;
     result(null, response);
   }
 });

@@ -11,10 +11,17 @@ var Q = thrift.Q;
 
 
 var ttypes = module.exports = {};
+ttypes.SomeEnum = {
+  'ENUM_ONE' : 0,
+  'ENUM_TWO' : 2,
+  'ENUM_THREE' : 4,
+  'ENUM_FOUR' : 5
+};
 var SomethingComplicatedRequest = module.exports.SomethingComplicatedRequest = function(args) {
   this.foo = null;
   this.bar = null;
   this.baz = null;
+  this.pok = null;
   if (args) {
     if (args.foo !== undefined && args.foo !== null) {
       this.foo = args.foo;
@@ -30,6 +37,11 @@ var SomethingComplicatedRequest = module.exports.SomethingComplicatedRequest = f
       this.baz = args.baz;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field baz is unset!');
+    }
+    if (args.pok !== undefined && args.pok !== null) {
+      this.pok = args.pok;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pok is unset!');
     }
   }
 };
@@ -68,6 +80,13 @@ SomethingComplicatedRequest.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.I32) {
+        this.pok = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -92,6 +111,11 @@ SomethingComplicatedRequest.prototype.write = function(output) {
   if (this.baz !== null && this.baz !== undefined) {
     output.writeFieldBegin('baz', Thrift.Type.BOOL, 3);
     output.writeBool(this.baz);
+    output.writeFieldEnd();
+  }
+  if (this.pok !== null && this.pok !== undefined) {
+    output.writeFieldBegin('pok', Thrift.Type.I32, 4);
+    output.writeI32(this.pok);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
